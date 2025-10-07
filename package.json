@@ -1,0 +1,35 @@
+{
+  "name": "maybe-helper",
+  "version": "0.1.0",
+  "description": "a monad to work with things that maybe empty, bit like the Java Optional stuff",
+  "keywords": [
+    "monad",
+    "Maybe",
+    "vitest",
+    "typescript"
+  ],
+  "homepage": "https://github.com/dominikschopper/maybe-helper#readme",
+  "bugs": {
+    "url": "https://github.com/dominikschopper/maybe-helper/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dominikschopper/maybe-helper.git"
+  },
+  "license": "MIT",
+  "author": "github@dschopper.de",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest src/use-maybe.spec.ts",
+    "build": "tsc",
+    "clean": "rm -r ./dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "vue": "^3.5.22"
+  }
+}
