@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { useMaybe, useMaybePath } from './useMaybe';
+import { useMaybe, useMaybePath } from './use-maybe';
 
 describe('useMaybe', () => {
   describe('hasValue and isEmpty', () => {
