@@ -1,6 +1,6 @@
 {
   "name": "maybe-helper",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "a monad to work with things that maybe empty, bit like the Java Optional stuff",
   "keywords": [
     "monad",
@@ -21,7 +21,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "vitest src/use-maybe.spec.ts",
+    "test": "vitest src/**.spec.ts",
     "build": "tsc",
     "clean": "rm -r ./dist"
   },
