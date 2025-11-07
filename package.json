@@ -1,35 +1,47 @@
 {
-  "name": "maybe-helper",
-  "version": "0.2.0",
-  "description": "a monad to work with things that maybe empty, bit like the Java Optional stuff",
-  "keywords": [
-    "monad",
-    "Maybe",
-    "vitest",
-    "typescript"
-  ],
-  "homepage": "https://github.com/dominikschopper/maybe-helper#readme",
-  "bugs": {
-    "url": "https://github.com/dominikschopper/maybe-helper/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dominikschopper/maybe-helper.git"
-  },
-  "license": "MIT",
-  "author": "github@dschopper.de",
-  "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "test": "vitest src/**.spec.ts",
-    "build": "tsc",
-    "clean": "rm -r ./dist"
-  },
-  "devDependencies": {
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
-  },
-  "dependencies": {
-    "vue": "^3.5.22"
-  }
+    "name": "vue-optional-helper",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "./dist/vue-optional-helper.cjs.js",
+    "module": "./dist/vue-optional-helper.es.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/vue-optional-helper.es.js",
+            "require": "./dist/vue-optional-helper.cjs.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "test": "vitest",
+        "test:ui": "vitest --ui",
+        "preview": "vite preview",
+        "lint": "pnpx eslint --stats ./src",
+        "lint:fix": "pnpx eslint --stats --fix ./src"
+    },
+    "devDependencies": {
+        "@eslint/css": "0.*.*",
+        "@eslint/js": "9.*.*",
+        "@eslint/json": "0.*.*",
+        "@eslint/markdown": "7.*.*",
+        "@types/node": "^20.19.24",
+        "@vitest/ui": "1.*.*",
+        "eslint": "9.*.*",
+        "eslint-plugin-vue": "8.*.*",
+        "globals": "16.*.*",
+        "typescript": "^5.3.0",
+        "typescript-eslint": "8.*.*",
+        "vite": "^5.0.0",
+        "vite-plugin-dts": "^3.7.0",
+        "vitest": "^1.0.0",
+        "vue": "^3.4.0"
+    },
+    "peerDependencies": {
+        "vue": "^3.3.0"
+    }
 }
