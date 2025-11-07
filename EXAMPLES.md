@@ -1,8 +1,8 @@
-# Optional - Verwendungsbeispiele
+# Optional - Usage Examples
 
-## Grundlegende Verwendung
+## Basic Usage
 
-### DTOs vom Backend wrappen
+### Wrapping DTOs from Backend
 
 ```typescript
 interface UserDTO {
@@ -19,11 +19,11 @@ interface UserDTO {
 // Backend Response
 const user: UserDTO | undefined = await fetchUser();
 
-// Ohne Optional (viel optional chaining)
+// Without Optional (lots of optional chaining)
 const userName = user?.name ?? 'Anonymous';
 const userCity = user?.profile?.city ?? 'Unknown';
 
-// Mit Optional (clean und typsicher)
+// With Optional (clean and type-safe)
 const userName = Optional.of(user)
   .map(u => u.name)
   .orElse('Anonymous');
@@ -35,7 +35,7 @@ const userCity = Optional.of(user)
 
 ## Vue 3 Composable Integration
 
-### In einem Composable mit Refs
+### In a Composable with Refs
 
 ```typescript
 function useUser() {
@@ -46,16 +46,16 @@ function useUser() {
     userRef.value = await response.json();
   }
   
-  // Wrapp den Ref in refAsOptional für reaktive Optional-API
+  // Wrap the ref in refAsOptional for reactive Optional API
   const user = refAsOptional(userRef);
   
-  // Computed Properties mit Optional
+  // Computed Properties with Optional
   const userName = computed(() => 
-    user.value.map(u => u.name).orElse('Gast')
+    user.value.map(u => u.name).orElse('Guest')
   );
   
   const userEmail = computed(() =>
-    user.value.map(u => u.email).orElse('keine-email@example.com')
+    user.value.map(u => u.email).orElse('no-email@example.com')
   );
   
   const isPremiumUser = computed(() =>
@@ -64,10 +64,10 @@ function useUser() {
       .orElse(false)
   );
   
-  // Schreiben in den Optional-Ref
+  // Writing to the Optional ref
   function setUser(newUser: UserDTO) {
     user.value = Optional.of(newUser);
-    // Schreibt automatisch in userRef.value
+    // Automatically writes to userRef.value
   }
   
   return { 
@@ -81,7 +81,7 @@ function useUser() {
 }
 ```
 
-### In Components verwenden
+### Using in Components
 
 ```vue
 <script setup lang="ts">
@@ -91,19 +91,19 @@ import { Optional } from '@/utils/Optional';
 
 const { user, userName, loadUser } = useUser();
 
-// Direkt im Component mit Optional arbeiten
+// Working with Optional directly in component
 const userCity = computed(() =>
   user.value
     .flatMap(u => u.profile?.city)
     .filter(city => city.length > 0)
-    .orElse('Stadt unbekannt')
+    .orElse('City unknown')
 );
 
 const userAge = computed(() =>
   user.value
     .flatMap(u => u.profile?.age)
-    .map(age => `${age} Jahre`)
-    .orElse('Alter unbekannt')
+    .map(age => `${age} years`)
+    .orElse('Age unknown')
 );
 
 onMounted(() => loadUser(123));
@@ -112,15 +112,15 @@ onMounted(() => loadUser(123));
 <template>
   <div class="user-profile">
     <h1>{{ userName }}</h1>
-    <p>Stadt: {{ userCity }}</p>
-    <p>Alter: {{ userAge }}</p>
+    <p>City: {{ userCity }}</p>
+    <p>Age: {{ userAge }}</p>
   </div>
 </template>
 ```
 
-## Fortgeschrittene Patterns
+## Advanced Patterns
 
-### Chaining mit filter und map
+### Chaining with filter and map
 
 ```typescript
 interface Product {
@@ -135,7 +135,7 @@ interface Product {
 
 const product: Product | undefined = await fetchProduct();
 
-// Berechne finalen Preis mit Rabatt
+// Calculate final price with discount
 const finalPrice = Optional.of(product)
   .flatMap(p => p.price)
   .filter(price => price > 0)
@@ -146,12 +146,12 @@ const finalPrice = Optional.of(product)
     return price * (1 - discount / 100);
   })
   .map(price => price.toFixed(2))
-  .orElse('Preis nicht verfügbar');
+  .orElse('Price not available');
 
-console.log(`Endpreis: €${finalPrice}`);
+console.log(`Final price: €${finalPrice}`);
 ```
 
-### Email-Validierung und Extraktion
+### Email Validation and Extraction
 
 ```typescript
 const email = Optional.of(user)
@@ -159,36 +159,36 @@ const email = Optional.of(user)
   .filter(email => email !== undefined && email.includes('@'))
   .filter(email => email!.length > 5);
 
-// Domain extrahieren
+// Extract domain
 const emailDomain = email
   .map(e => e!.split('@')[1])
   .orElse('unknown-domain');
 
-// Aktion nur bei vorhandener Email
+// Action only if email present
 email.ifPresent(e => {
-  console.log(`Sende Benachrichtigung an: ${e}`);
+  console.log(`Send notification to: ${e}`);
   sendEmail(e);
 });
 
-// Mit Alternative
+// With alternative
 email.ifPresentOrElse(
   e => sendEmail(e),
-  () => console.log('Keine Email vorhanden')
+  () => console.log('No email available')
 );
 ```
 
-### Fallback-Ketten mit or()
+### Fallback Chains with or()
 
 ```typescript
-// Versuche verschiedene Datenquellen
+// Try different data sources
 const userName = Optional.of(user)
   .map(u => u.name)
   .or(() => Optional.of(user).map(u => u.email?.split('@')[0]))
-  .or(() => Optional.of('Benutzer'))
-  .orElse('Unbekannt');
+  .or(() => Optional.of('User'))
+  .orElse('Unknown');
 ```
 
-### Business Logic mit filter
+### Business Logic with filter
 
 ```typescript
 interface Order {
@@ -202,36 +202,36 @@ interface Order {
 
 const order: Order | undefined = await fetchOrder();
 
-// Prüfe ob Rabatt gewährt werden soll
+// Check if discount should be granted
 const discount = Optional.of(order)
   .filter(o => o.status === 'completed')
   .filter(o => (o.amount ?? 0) > 100)
   .flatMap(o => o.customer?.isPremium)
   .filter(isPremium => isPremium === true)
-  .map(() => 0.15) // 15% Rabatt
+  .map(() => 0.15) // 15% discount
   .orElse(0);
 
-console.log(`Rabatt: ${discount * 100}%`);
+console.log(`Discount: ${discount * 100}%`);
 ```
 
-### Fehlerbehandlung mit orElseThrow
+### Error Handling with orElseThrow
 
 ```typescript
-// Kritische Werte die vorhanden sein müssen
+// Critical values that must be present
 const userId = Optional.of(user)
   .map(u => u.id)
-  .orElseThrow(() => new Error('User ID ist erforderlich'));
+  .orElseThrow(() => new Error('User ID is required'));
 
 const apiKey = Optional.of(config)
   .map(c => c.apiKey)
   .filter(key => key.length > 10)
-  .orElseThrow(() => new Error('Ungültiger API Key'));
+  .orElseThrow(() => new Error('Invalid API Key'));
 
-// Mit get() - wirft Standard-Error
+// With get() - throws standard error
 const requiredEmail = Optional.of(user)
   .map(u => u.email)
   .filter(email => email !== undefined)
-  .get(); // Wirft Error wenn nicht vorhanden
+  .get(); // Throws error if not present
 ```
 
 ### Async Operations
@@ -240,14 +240,14 @@ const requiredEmail = Optional.of(user)
 async function getUserWithFallback(id: number) {
   const user = await fetchUser(id);
   
-  // Lade Default-User wenn nicht vorhanden
+  // Load default user if not present
   return await orElseGetAsync(
     Optional.of(user),
     async () => await fetchDefaultUser()
   );
 }
 
-// In einem Composable
+// In a composable
 const user = ref<UserDTO | undefined>();
 
 async function loadUserData(id: number) {
@@ -256,14 +256,14 @@ async function loadUserData(id: number) {
   user.value = await orElseGetAsync(
     Optional.of(data),
     async () => {
-      console.log('User nicht gefunden, lade Fallback...');
+      console.log('User not found, loading fallback...');
       return await fetchGuestUser();
     }
   );
 }
 ```
 
-### Komplexe Verschachtelung mit optionalPath
+### Complex Nesting with optionalPath
 
 ```typescript
 interface Company {
@@ -283,20 +283,20 @@ interface Company {
 
 const company: Company | undefined = await fetchCompany();
 
-// Tief verschachtelte Properties sicher zugreifen
+// Safely access deeply nested properties
 const frontendLeadName = optionalPath(
   company,
   c => c.departments?.engineering?.teams?.frontend?.lead?.name
-).orElse('Nicht zugewiesen');
+).orElse('Not assigned');
 
 const frontendLeadEmail = optionalPath(
   company,
   c => c.departments?.engineering?.teams?.frontend?.lead?.email
 ).filter(email => email.includes('@'))
-  .orElse('keine-email@example.com');
+  .orElse('no-email@example.com');
 ```
 
-### List Operations mit Array.map
+### List Operations with Array.map
 
 ```typescript
 interface TodoDTO {
@@ -307,16 +307,16 @@ interface TodoDTO {
 
 const todos: TodoDTO[] = await fetchTodos();
 
-// Transformiere Array von DTOs
+// Transform array of DTOs
 const todoTitles = todos
   .map(todo => 
     Optional.of(todo)
       .map(t => t.title)
       .filter(title => title !== undefined && title.length > 0)
-      .orElse('Unbenannt')
+      .orElse('Untitled')
   );
 
-// Nur completed Todos
+// Only completed todos
 const completedCount = todos
   .filter(todo => 
     Optional.of(todo)
@@ -337,34 +337,34 @@ interface FormData {
 
 const formData: FormData = getFormData();
 
-// Validiere Username
+// Validate username
 const validUsername = Optional.of(formData)
   .map(f => f.username)
   .filter(name => name !== undefined && name.length >= 3)
   .filter(name => /^[a-zA-Z0-9]+$/.test(name!));
 
 if (validUsername.isEmpty()) {
-  showError('Username muss mindestens 3 Zeichen haben');
+  showError('Username must be at least 3 characters');
 }
 
-// Validiere Email
+// Validate email
 const validEmail = Optional.of(formData)
   .map(f => f.email)
   .filter(email => email !== undefined && email.includes('@'));
 
 validEmail.ifPresentOrElse(
   email => submitForm(email),
-  () => showError('Gültige Email erforderlich')
+  () => showError('Valid email required')
 );
 
-// Validiere Alter
+// Validate age
 const age = Optional.of(formData)
   .flatMap(f => f.age)
   .filter(age => age >= 18)
-  .orElseThrow(() => new Error('Mindestalter: 18 Jahre'));
+  .orElseThrow(() => new Error('Minimum age: 18 years'));
 ```
 
-## Testing mit Optional
+## Testing with Optional
 
 ```typescript
 import { describe, it, expect } from 'vitest';
@@ -394,16 +394,16 @@ describe('UserService', () => {
 
 ## Best Practices
 
-### ✅ DO: Verwende Optional für Backend DTOs
+### ✅ DO: Use Optional for Backend DTOs
 
 ```typescript
-// ✅ Gut
+// ✅ Good
 const userName = Optional.of(user).map(u => u.name).orElse('Guest');
 ```
 
-### ❌ DON'T: Verwende Optional nicht für guaranteed values
+### ❌ DON'T: Don't use Optional for guaranteed values
 
 ```typescript
-// ❌ Schlecht - name ist nie undefined
+// ❌ Bad - name is never undefined
 const name: string = 'Max';
-const wrapped = Optional.of(
+const wrapped = Optional.of(name); // Unnecessary
