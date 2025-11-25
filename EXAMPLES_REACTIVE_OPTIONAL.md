@@ -1,5 +1,3 @@
-```
-
 ## ReactiveOptional (For Vue Composables with Backend DTOs)
 
 ### In a Composable
